@@ -78,9 +78,9 @@ class AuthenticationController extends Controller
 
     }
 
-    public function logout()
-    {
-        auth()->user()->tokens()->delete();
-        return successResponse(new AuthenticationResource(auth()->user()), 200, 'کاربر با موفقیت خارج شد.');
-    }
+    // public function logout()
+    // {
+    //     auth()->user()->tokens()->delete();
+    //     return successResponse(new AuthenticationResource(auth()->user()), 200, 'کاربر با موفقیت خارج شد.');
+    // }
 }
