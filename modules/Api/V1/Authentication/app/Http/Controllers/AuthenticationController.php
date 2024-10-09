@@ -81,14 +81,23 @@ class AuthenticationController extends Controller
 
     public function sendSms(Request $request)
     {
+        $user = User::where('phone_number', $request->phone_number)->first();
         $phone_number = $request->input('phone_number');
-        $checkLastSms = SmsCode::checkTwoMinute($phone_number);
+        $checkLastSms = User::checkTwoMinute($phone_number);
+        $code = rand(111111, 999999);
         if ($checkLastSms == null) {
-            $code = rand(111111, 999999);
-            SmsCode::query()->create([
-                'phone_number' => $phone_number,
-                'code' => $code,
-            ]);
+            if($user){
+                $user->update([
+                    'code' => $code,
+                ]);
+            }else{
+                $user = User::Create([
+                    'phone_number' => $request->phone_number,
+                    'code' => $code,
+                ]);
+
+            }
+
 
             return response()->json([
                 'resault' => true,
@@ -111,7 +120,7 @@ class AuthenticationController extends Controller
         } else {
             return response()->json([
                 'resault' => false,
-                'message' => "اس ام اس ارسال نشد",
+                'message' => "اس ام اس ارسال نشد پس از 2 دقیقه مجددا امتحان کنبد",
                 'data' => [],
             ], 403);
 
