@@ -3,7 +3,6 @@
 namespace Modules\Api\V1\Authentication\app\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\SmsCode;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -81,23 +80,35 @@ class AuthenticationController extends Controller
 
     public function sendSms(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'phone_number' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 422);
+        }
+
         $user = User::where('phone_number', $request->phone_number)->first();
+
         $phone_number = $request->input('phone_number');
         $checkLastSms = User::checkTwoMinute($phone_number);
         $code = rand(111111, 999999);
+        $login_token = Hash::make('SDLFKGFfew65');
+
         if ($checkLastSms == null) {
-            if($user){
+            if ($user) {
                 $user->update([
                     'code' => $code,
+                    'login_token' => $login_token,
                 ]);
-            }else{
+            } else {
                 $user = User::Create([
                     'phone_number' => $request->phone_number,
                     'code' => $code,
+                    'login_token' => $login_token,
                 ]);
 
             }
-
 
             return response()->json([
                 'resault' => true,
@@ -105,6 +116,7 @@ class AuthenticationController extends Controller
                 'data' => [
                     'phone_number' => $phone_number,
                     'code' => $code,
+                    'login_token' => $login_token,
 
                 ],
             ], 201);
@@ -113,6 +125,7 @@ class AuthenticationController extends Controller
                 'data' => [
                     'phone_number' => $phone_number,
                     'code' => $code,
+                    'login_token' => $login_token,
 
                 ],
             ], 200, 'حساب کاربری با موفقیت ایجاد شد.');
@@ -127,9 +140,28 @@ class AuthenticationController extends Controller
         }
     }
 
-    // public function logout()
-    // {
-    //     auth()->user()->tokens()->delete();
-    //     return successResponse(new AuthenticationResource(auth()->user()), 200, 'کاربر با موفقیت خارج شد.');
-    // }
+    public function verifyCode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->messages(), 422);
+        }
+        $user = User::where('code', $request->code)->firstOrFail();
+
+        $token = $user->createToken('myApp2')->plainTextToken;
+        if ($user->code == $request->code) {
+            return successResponse([
+                'data' => new AuthenticationResource($user),
+                'token' => $token,
+            ], 200, 'کاربر با موفقیت وارد شد.');
+
+        } else {
+            return errorResponse(401, 'کد تایید اشتباه است!');
+
+        }
+    }
+
 }

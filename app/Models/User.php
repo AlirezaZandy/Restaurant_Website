@@ -55,4 +55,20 @@ class User extends Authenticatable
             return false;
         }
     }
+
+    public static function checkCode($phone_number , $code , $login_token){
+        $checkCode = self::query()->where([
+            'phone_number' => $phone_number,
+            'code' => $code,
+            'login_token' => $login_token,
+        ])->first();
+
+        if($checkCode){
+            return true;
+
+        }else{
+            return false;
+        }
+
+    }
 }
