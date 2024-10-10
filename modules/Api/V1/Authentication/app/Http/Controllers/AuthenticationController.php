@@ -78,7 +78,7 @@ class AuthenticationController extends Controller
 
     }
 
-    public function sendSms(Request $request)
+    public function loginSms(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'phone_number' => 'required',
