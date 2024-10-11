@@ -18,6 +18,7 @@ class AuthenticationController extends Controller
             'lastname' => 'required|string',
             'username' => 'required|string|unique:users,username',
             'email' => 'required|email|unique:users,email',
+            'phone_number' => 'required|unique:users,phone_number',
             'password' => 'required|string',
             'password_confirmation' => 'required|same:password',
         ]);
@@ -31,6 +32,7 @@ class AuthenticationController extends Controller
             'lastname' => $request->lastname,
             'username' => $request->username,
             'email' => $request->email,
+            'phone_number' => $request->phone_number,
             'password' => Hash::make($request->password),
             'provider_name' => 'manual',
         ]);
@@ -51,23 +53,30 @@ class AuthenticationController extends Controller
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'phone_number' => 'required',
+            'email' => 'required',
             'password' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->messages(), 422);
         }
+        $email = $request->email;
+        $phone_number = $request->phone_number;
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('phone_number' , $phone_number)->where('email' , $email)->first();
 
         if (!$user) {
             return errorResponse(401, 'کاربر یافت نشد!');
         }
 
+
+
         if (!Hash::check($request->password, $user->password)) {
             return errorResponse(401, 'رمز عبور اشتباه است!');
         }
+
+
 
         $token = $user->createToken('myApp')->plainTextToken;
 
@@ -160,7 +169,6 @@ class AuthenticationController extends Controller
 
         } else {
             return errorResponse(401, 'کد تایید اشتباه است!');
-
         }
     }
 
