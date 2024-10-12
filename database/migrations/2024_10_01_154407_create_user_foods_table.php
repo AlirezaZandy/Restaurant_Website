@@ -19,10 +19,9 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('food_id');
             $table->foreign('food_id')->references('id')->on('food_types')->onDelete('cascade');
-            $table->foreignId('food_id');
-            $table->foreign('food_id')->references('id')->on('food_types')->onDelete('cascade');
             $table->unsignedInteger('price');
             $table->string('status');
+            $table->boolean('show_status');
             $table->softDeletes();
             $table->timestamps();
         });
