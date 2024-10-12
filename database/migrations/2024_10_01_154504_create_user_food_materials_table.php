@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('food_id')->references('id')->on('user_foods')->onDelete('cascade');
             $table->foreignId('material_id');
             $table->foreign('material_id')->references('id')->on('materials')->onDelete('cascade');
+            $table->enum('amount', ['1', '2', '3']);
         });
     }
 
