@@ -39,11 +39,6 @@ class AuthenticationController extends Controller
 
         $token = $user->createToken('myApp')->plainTextToken;
 
-        return response()->json([
-            'user' => $user,
-            'token' => $token,
-        ], 201);
-
         return successResponse([
             'data' => new AuthenticationResource($user),
             'token' => $token,
@@ -70,13 +65,9 @@ class AuthenticationController extends Controller
             return errorResponse(401, 'کاربر یافت نشد!');
         }
 
-
-
         if (!Hash::check($request->password, $user->password)) {
             return errorResponse(401, 'رمز عبور اشتباه است!');
         }
-
-
 
         $token = $user->createToken('myApp')->plainTextToken;
 
