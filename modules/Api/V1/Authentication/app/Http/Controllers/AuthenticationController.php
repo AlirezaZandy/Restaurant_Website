@@ -131,12 +131,7 @@ class AuthenticationController extends Controller
             ], 200, 'حساب کاربری با موفقیت ایجاد شد.');
 
         } else {
-            return response()->json([
-                'resault' => false,
-                'message' => "اس ام اس ارسال نشد پس از 2 دقیقه مجددا امتحان کنبد",
-                'data' => [],
-            ], 403);
-
+            return errorResponse(403, 'اس ام اس ارسال نشد پس از 2 دقیقه مجددا امتحان کنبد');
         }
     }
 

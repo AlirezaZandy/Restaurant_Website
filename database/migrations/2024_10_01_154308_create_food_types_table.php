@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->unsignedInteger('baking_time')->nullable();
             $table->string('status')->default(1);
+            $table->string('image')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

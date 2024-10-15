@@ -3,12 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Api\V1\Authentication\app\Http\Controllers\AuthenticationController;
+use Modules\Api\V1\FoodType\app\Http\Controllers\FoodTypeController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 Route::prefix('v1/')->name('v1.')->group(function () {
+    Route::apiResource('foodType' , FoodTypeController::class);
     Route::post('register' , [AuthenticationController::class , 'register'])->name('register');
     Route::post('login' , [AuthenticationController::class , 'login']);
     Route::post('logout' , [AuthenticationController::class , 'logout'])->middleware('auth:sanctum');

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->foreignId('food_id');
             $table->foreign('food_id')->references('id')->on('food_types')->onDelete('cascade');
+            $table->tinyInteger('step');
             $table->string('status')->default(1);
             $table->softDeletes();
             $table->timestamps();
