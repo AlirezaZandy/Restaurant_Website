@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('type_id')->references('id')->on('material_types')->onDelete('cascade');
             $table->unsignedInteger('price')->nullable();
             $table->unsignedInteger('calorie')->nullable();
+            $table->string('status')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });
